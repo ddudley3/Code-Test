@@ -48,13 +48,10 @@ namespace SpellChecker.Console
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            // As soon as I add this in.. it's acting like I don't have a reference to Ninject.  I had the same issue with Unity.
-            // I'm not used to .NET Standard.  It's not working like the .NET Framework does.
-
-            //IKernel kernel = new StandardKernel(new SpellCheckerModule());
+            IKernel kernel = new StandardKernel(new SpellCheckerModule());
             
-            //var dictspellChecker = kernel.Get<ISpellChecker>("Dictionary");
-            //var iespellchecker = kernel.Get<ISpellChecker>("IBeforeE");
+            var dictspellChecker = kernel.Get<ISpellChecker>("Dictionary");
+            var iespellchecker = kernel.Get<ISpellChecker>("IBeforeE");
 
             var incorrectwords = new List<string>();
 
@@ -69,8 +66,8 @@ namespace SpellChecker.Console
                 // use this spellChecker to evaluate the words
                 var spellChecker = new Core.SpellChecker(new ISpellChecker[]
                 {
-                    new MnemonicSpellCheckerIBeforeE(),
-                    new DictionaryDotComSpellChecker(),
+                    iespellchecker,
+                    dictspellChecker,
                 });
                 var boolresult = spellChecker.Check(word);
 
